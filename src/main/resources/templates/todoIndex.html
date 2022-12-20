@@ -1,0 +1,42 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+          padding: 0.5rem;
+        }
+    </style>
+    <title>Todo lists</title>
+</head>
+<body>
+
+<h3>Add new todo list</h3>
+<form th:object="${listToAdd}" method="POST" action="/add-list">
+    <p>Name: <input type="text" th:field="*{name}"/></p>
+    <p><input type="submit" value="Add"/></p>
+</form>
+
+<th:block th:each="list : ${lists}">
+    <p>
+        <a th:href="@{'/get-list/' + ${list.getList().getId()}}" style="text-decoration:none;">
+            <strong th:text="${list.getList().getName()}"></strong>
+        </a>
+        <form th:object="${listToRemove}" method="POST" action="/remove-list">
+         <input type="hidden" name="id" th:value="${list.getList().getId()}"/>
+        <p><input type="submit" value="Remove"/></p>
+        </form> </p>
+    <table style="border: 1px solid black;">
+        <th:block th:each="item: ${list.getItems()}">
+            <tr>
+                <td th:text="${item.getName()}"></td>
+                <td th:text="${item.getStatus()}"></td>
+            </tr>
+        </th:block>
+    </table>
+</th:block>
+
+</body>
+</html>

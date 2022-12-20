@@ -1,0 +1,61 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+          padding: 0.5rem;
+        }
+
+    </style>
+    <title>Todo list</title>
+</head>
+<body>
+
+<h3><a href="/get-lists" style="text-decoration:none">Back to main page</a></h3>
+
+<h3>Add new todo item</h3>
+<form th:object="${itemToAdd}" method="POST" action="/add-item">
+    <p>Name: <input type="text" th:field="*{name}"/></p>
+    <input type="hidden" th:field="*{listId}"/>
+    <p><input type="submit" value="Add"/></p>
+</form>
+
+<p>
+    <strong th:text="${list.getList().getId()}"></strong>.
+    <strong th:text="${list.getList().getName()}"></strong>
+</p>
+<table style="border: 1px solid black;">
+    <th:block th:each="item: ${list.getItems()}">
+        <tr>
+            <td th:text="${item.getName()}"></td>
+            <td th:text="${item.getStatus()}">
+            <td>
+                <form th:object="${itemToChange}" method="POST" action="/change-item">
+                    <input type="hidden" name="id" th:value="${item.getId()}"/>
+                    <input type="hidden" th:field="*{listId}"/>
+                    <label>
+                        <select name="status" th:value="${item.getStatus()}">
+                            <option th:value="TODO" th:text="TODO"></option>
+                            <option th:value="IN_PROGRESS" th:text="IN_PROGRESS"></option>
+                            <option th:value="DONE" th:text="DONE"></option>
+                        </select>
+                    </label>
+                    <p><input type="submit" value="Change"/></p>
+                </form>
+            </td>
+            <td>
+                <form th:object="${itemToRemove}" method="POST" action="/remove-item">
+                    <input type="hidden" name="id" th:value="${item.getId()}"/>
+                    <input type="hidden" th:field="*{listId}" th:value="${item.getListId()}"/>
+                    <p><input type="submit" value="Remove"/></p>
+                </form>
+            </td>
+        </tr>
+    </th:block>
+</table>
+
+</body>
+</html>
